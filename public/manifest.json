@@ -1,0 +1,36 @@
+{
+    "theme_color" : "#38bdf8",
+    "background_color": "#e2e8f0",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "name": "Nano Linker",
+    "short_name": "Nano Linker",
+    "description": "Nano Linker is a powerful tool that allows users to easily transform long, cumbersome URLs into short, concise links. By simply inputting any URL into our app, users can generate a customized shortened version that is easier to share, remember, and manage. With the added benefit of requiring users to sign in before saving the results, our app provides a secure and personalized experience for all users.",
+    "icons": [
+        {
+          "src": "favicon192.png",
+          "type": "image/png",
+          "sizes": "192x192",
+          "purpose": "maskable"
+        },
+        {
+          "src": "favicon512.png",
+          "type": "image/png",
+          "sizes": "512x512",
+          "purpose": "maskable"
+        },
+        {
+          "src": "favicon192.png",
+          "type": "image/png",
+          "sizes": "192x192",
+          "purpose": "any"
+        },
+        {
+          "src": "favicon512.png",
+          "type": "image/png",
+          "sizes": "512x512",
+          "purpose": "any"
+        }
+      ]
+}
