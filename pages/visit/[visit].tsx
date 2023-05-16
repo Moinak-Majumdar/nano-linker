@@ -14,7 +14,6 @@ interface props { link: string }
 function Visit({ link }: props) {
 
     const router = useRouter();
-    console.log(link)
 
     useEffect(() => {
         if (link !== 'expired') {
@@ -58,7 +57,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         const res = await axios.post(`${process.env.NEXT_PUBLIC_CONNECTION_API}/redirect`, { slug: visit }, { headers: { 'Content-Type': 'application/json' } })
         const data = res.data
         link = data['url']
-        console.log(link)
         if (link !== 'expired') {
             return {
                 redirect: { permanent: false, destination: link }

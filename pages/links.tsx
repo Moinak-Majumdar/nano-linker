@@ -99,7 +99,7 @@ const Links = () => {
                 <section className='min-w-[100vw] overflow-hidden relative'>
                     <main className='myContainer min-h-screen flex items-center'>
                         <AnimatedHeading classList={`${comicNeue.className} my-2 text-blue-500 text-3xl mx-auto`} title='Your Nano Links' />
-                        <h1></h1>
+                        <Link href='/' style={poppins.style} className='text-xl hover:text-blue-500 hover:underline'>New Links?</Link>
                         <div className="min-w-full text-sm mt-4">
                             <div className='w-full'>
                                 <div style={poppins.style} className='grid grid-cols-4 lg:grid-cols-5 lg:text-xl text-white bg-sky-600'>
