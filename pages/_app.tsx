@@ -1,6 +1,7 @@
 import NextNProgress from 'nextjs-progressbar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Analytics } from '@vercel/analytics/react';
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import PageLoader from '@/components/tools/PageLoader';
@@ -30,6 +31,7 @@ export default function App({ Component, pageProps }: AppProps) {
         </AuthProvider>
       </PageLoader>
       <ToastContainer newestOnTop={true} autoClose={3000} pauseOnHover />
+      <Analytics />
     </>
   )
 }
