@@ -23,7 +23,7 @@ const LinkSkeleton = () => {
             </Head>
             <section className='min-w-[100vw] overflow-hidden relative'>
                 <main className='myContainer min-h-screen flex items-center'>
-                    <h2 style={poppins.style} className='my-8 text-sky-500 text-2xl'>Seems you are not sign in, Please do sign in bto access your saved Nano links.</h2>
+                    <h2 style={poppins.style} className='my-8 text-sky-500 text-2xl'>Seems you are not sign in, Please do sign in to access your saved Nano links.</h2>
                     <Link href='/auth/SignIn' style={poppins.style} className='text-xl hover:text-blue-500 hover:underline'>Sign In?</Link>
                     <div className="min-w-full text-sm mt-8 px-3">
                         <div className='w-full'>
