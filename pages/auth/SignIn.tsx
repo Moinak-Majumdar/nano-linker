@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import Head from 'next/head'
+import { useEffect } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 import { BsGithub } from 'react-icons/bs'
 import { Comic_Neue, Poppins } from 'next/font/google'
@@ -23,13 +24,16 @@ const SignIn = () => {
     const [user, loading, error] = useAuthState(auth);
     const {signIn} = useAuth()
 
-    if(user) {
-        const {email} = user
-        if(email) {
-            createUser(email)
-            router.push('/')
+    useEffect(() => {
+        if(user) {
+            const {uid} = user
+            if(uid) {
+                createUser(uid)
+                router.push('/')
+            }
         }
-    }
+    }, [user])
+    
 
     if(loading) {
         return <AuthLoading />

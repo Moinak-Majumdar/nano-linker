@@ -74,7 +74,7 @@ export default function Home() {
       const status = user ? 'authenticated' : 'unauthenticated'
       const res = await createLink(url.href, status)
       if (res !== 'error') {
-        user?.email ? await saveLinks(user.email, { url: url.href, slug: res }) : ''
+        user?.uid ? await saveLinks(user.uid, { url: url.href, slug: res }) : ''
         setReadOnlyControl(true)
         setCopySubmitControl(true)
         toast.success('Nano link is generated. 😃')
@@ -98,13 +98,13 @@ export default function Home() {
       </Head>
       <main className='myContainer min-h-screen justify-center lg:justify-between lg:flex-row items-center'>
         <div className='flex justify-center items-center flex-col'>
-          <Image src='/assets/gif/bg1.gif' alt='bg' height={250} width={250} quality={75} priority={true} />
-          <AnimatedHeading classList={`mt-2 lg:mt-8 text-center text-blue-500 text-3xl lg:text-4xl font-bold ${roboto.className}`} title='Nano Linker' />
+          <Image src='/assets/gif/bg1.gif' alt='bg' height={250} width={250} quality={75} priority={true} className='noSelection' />
+          <AnimatedHeading classList={`mt-2 lg:mt-8 text-center text-blue-500 text-3xl lg:text-4xl font-bold noSelection ${roboto.className}`} title='Nano Linker' />
         </div>
         <div style={roboto.style} className='flex flex-col items-center w-full relative'>
           <form onSubmit={handelSubmit} className='flex flex-col items-center w-full'>
             <div className='w-[90%] lg:w-[70%] flex flex-col mt-20 lg:mt-0 ml-0 lg:ml-auto'>
-              <input value={input} onChange={(e) => setInput(e.target.value)} readOnly={ReadOnlyControl} placeholder='Enter / paste your url here. 🔗 ' type='text' className={classList.ip} required />
+              <input value={input} onChange={(e) => setInput(e.target.value)} readOnly={ReadOnlyControl} placeholder='Enter / paste your url here. 🔗 ' type='url' className={classList.ip} required />
               <button ref={submitRef} type='submit' hidden />
             </div>
           </form>

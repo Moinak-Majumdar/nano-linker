@@ -33,7 +33,7 @@ const Links = () => {
 
     type T_UseLinks = { url: string, slug: string, _id: string }
     const [UserLinks, setUserLinks] = useState<T_UseLinks[]>([])
-    type T_User = { _id: string, email: string, sessionCount: number }
+    type T_User = { _id: string, userId: string, sessionCount: number }
     const [User, setUser] = useState<T_User>()
     const [Origin, setOrigin] = useState<string>('')
     const router = useRouter()
@@ -44,12 +44,12 @@ const Links = () => {
         const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : ''
         setOrigin(origin)
         async function get() {
-            const email = authUser?.email
-            if (email) {
-                const d = await getUserLinks(email)
+            const uid = authUser?.uid
+            if (uid) {
+                const d = await getUserLinks(uid)
                 if (typeof d !== 'undefined') {
-                    const { _id, email, sessionCount, links } = d['data']
-                    setUser({ _id, email, sessionCount })
+                    const { _id, userId, sessionCount, links } = d['data']
+                    setUser({ _id, userId, sessionCount })
                     setUserLinks(links)
                 }
             }
@@ -63,14 +63,14 @@ const Links = () => {
         copy(link)
     }
 
-    async function deleteLink(doc: {url: string, slug: string,  _id: string}, index: Number) {
+    async function deleteLink(doc: {url: string, slug: string, _id: string}, index: Number) {
         const ack = confirm(`Do you want to delete Nano Link no: ${index}`)
         if(ack) {
             if(User !== undefined) {
-                const d = await deleteUserLink(User['_id'], User.email, doc)
+                const d = await deleteUserLink(User['userId'], doc)
                 if (typeof d !== 'undefined') {
-                    const { _id, email, sessionCount, links } = d['data']
-                    setUser({ _id, email, sessionCount })
+                    const { _id, userId, sessionCount, links } = d['data']
+                    setUser({ _id, userId, sessionCount })
                     setUserLinks(links)
                     toast("Nano Link is removed.")
                 }

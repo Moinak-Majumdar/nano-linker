@@ -12,8 +12,8 @@ async function createLink (url: string, isAuthenticated:string):Promise<string> 
     return ans;    
 }
 
-async function createUser (email: string) {
-    await axios.post(`${process.env.NEXT_PUBLIC_CONNECTION_API}/createUser`, {email}, {headers: { 'Content-Type': 'application/json'}}).then(res => {
+async function createUser (uid: string) {
+    await axios.post(`${process.env.NEXT_PUBLIC_CONNECTION_API}/createUser`, {uid}, {headers: { 'Content-Type': 'application/json'}}).then(res => {
         const {success} = res.data;
         console.log(success)
     }).catch(err => {
@@ -21,8 +21,8 @@ async function createUser (email: string) {
     })
 }
 
-async function saveLinks(email:string, links: {url: string, slug: string}) {
-    await axios.post(`${process.env.NEXT_PUBLIC_CONNECTION_API}/saveLinks`, {email, links}, {headers: { 'Content-Type': 'application/json'}}).then(res => {
+async function saveLinks(uid:string, links: {url: string, slug: string}) {
+    await axios.post(`${process.env.NEXT_PUBLIC_CONNECTION_API}/saveLinks`, {uid, links}, {headers: { 'Content-Type': 'application/json'}}).then(res => {
         const {info} = res.data;
         console.log(info)
     }).catch(err => {
@@ -30,9 +30,9 @@ async function saveLinks(email:string, links: {url: string, slug: string}) {
     })
 }
 
-async function getUserLinks(email: string) {
+async function getUserLinks(uid: string) {
     let ans
-    await axios.post(`${process.env.NEXT_PUBLIC_CONNECTION_API}/getUserLinks`, {email}, {headers: { 'Content-Type': 'application/json'}}).then(res => {
+    await axios.post(`${process.env.NEXT_PUBLIC_CONNECTION_API}/getUserLinks`, {uid}, {headers: { 'Content-Type': 'application/json'}}).then(res => {
         ans = res.data;
     }).catch(err => {
         console.log(err)
@@ -41,10 +41,10 @@ async function getUserLinks(email: string) {
     return ans
 } 
 
-async function deleteUserLink(uid: string, email: string, doc: { url: string, slug:string, _id: string}) {
+async function deleteUserLink(uid: string, doc: { url: string, slug:string, _id: string}) {
     let result
     await axios.post(`${process.env.NEXT_PUBLIC_CONNECTION_API}/deleteLink`, {uid, obj: doc}, {headers: { 'Content-Type': 'application/json'}}).then(async () => {
-        result = await getUserLinks(email)
+        result = await getUserLinks(uid)
     }).catch((err) => {
         console.log(err)
         return false

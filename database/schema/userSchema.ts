@@ -1,15 +1,22 @@
-import { Schema, model, models } from "mongoose";
+import { Schema, model, models, Types, Model } from "mongoose";
 
-const userData_schema = new Schema ({
-    email: {
-        type: String, require: true, unique: true, dropDups: true
+interface I_Links {
+    url: string, slug: string, _id: Types.ObjectId;
+}
+interface I_User {
+    userId: string, sessionCount: number, links: Types.DocumentArray<I_Links>
+}
+
+const userData_schema = new Schema<I_User, Model<I_Links>> ({
+    userId: {
+        type: String, required: true, unique: true,
     },
     sessionCount: {
-        type: Number, require: true 
+        type: Number, required: true 
     },
     links : [{
-        url: { type: String, require: true},
-        slug : { type: String, require: true}
+        url: { type: String, required: true},
+        slug : { type: String, required: true}
     }]
 })
 

@@ -7,26 +7,25 @@ import disconnectMongo from '@/database/function/disconnectMongo';
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  await connectMongo();
-
-  const { connection } = req.query;
-
+  
   if (req.method === 'POST') {
+    await connectMongo();
+    const { connection } = req.query;
 
     switch (connection) {
 
       //hl1 create user during sign in  
       case 'createUser': {
-        const { email } = req.body;
-        if (!email) {
-          return res.status(400).json({ error: 'user can not be created without email.' })
+        const { uid } = req.body;
+        if (!uid) {
+          return res.status(400).json({ error: 'user can not be created without uid.' })
         }
 
         try {
-          const exists = await userDb.findOne({ "email": email })
+          const exists = await userDb.findOne({ "userId": uid })
 
           if (exists) {
-            userDb.updateOne({ "email": email }, { "$set": { "sessionCount": exists["sessionCount"] + 1 } }, { "upsert": false }).then((result) => {
+            userDb.updateOne({ "userId": uid }, { "$set": { "sessionCount": exists["sessionCount"] + 1 } }, { "upsert": false }).then((result) => {
               const { matchedCount, modifiedCount } = result;
               if (matchedCount && modifiedCount) {
                 return res.status(200).json({ success: 'User already exist!' })
@@ -35,8 +34,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               console.log(err)
             })
           } else {
-            const doc = new userDb({ "email": email, "sessionCount": 1, "links": [] })
-            const newDoc = doc.save();
+            const doc = new userDb({ "userId": uid, "sessionCount": 1, "links": [] })
+            const newDoc = await doc.save();
             if (newDoc) {
               return res.status(200).json({ success: 'User Created.' })
             } else {
@@ -68,17 +67,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               res.status(200).json({ slug })
               if (isAuthenticated === 'unauthenticated') {
                 const id = doc['_id']
-                const schedule = cron.schedule('0 */1 * * *', async () => {
+                const delay = 12 * 60 * 60 * 1000;
+                setTimeout(async() => {
                   try {
-                    const result = await url_collection.findByIdAndDelete(id);
+                    await url_collection.findByIdAndDelete(id);
                     console.log('link deleted')
-                    if (result === null) {
-                      schedule.stop()
-                    }
                   } catch (error) {
                     console.log(error)
                   }
-                })
+                }, delay)
               }
             } else {
               res.status(400).json({ error: 'Failed to generate Nano link' })
@@ -106,17 +103,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       // hl4  save nano link at user auth 
       case 'saveLinks': {
-        const { email, links } = req.body;
-        if (!email || !links) {
+        const { uid, links } = req.body;
+        if (!uid || !links) {
           return res.status(400).json({ error: 'all fields are required.' })
         }
-        userDb.findOne({ email: email }).then(async (exist) => {
+        userDb.findOne({ "userId": uid }).then(async (exist) => {
           if (exist) {
-            const inner = await userDb.find({'$and': [{"email": email}, { 'links': { "$elemMatch": links } }]})
+            const inner = await userDb.find({'$and': [{"userId": uid}, { 'links': { "$elemMatch": links } }]})
             if (inner.length < 1) {
-              const query = { "email": email }
-              const update = { "$addToSet": { "links": links } }
-              userDb.updateOne(query, update).then(d => {
+              userDb.updateOne({ "userId": uid }, { "$addToSet": { "links": links } }).then(() => {
                 return res.status(200).json({ info: 'Nano Link saved.' })
               }).catch(err => {
                 return res.status(400).json({ error: err })
@@ -134,13 +129,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       // hl5   find all nano links of user  
       case 'getUserLinks': {
-        const { email } = req.body;
+        const { uid } = req.body;
 
-        if (!email) {
+        if (!uid) {
           return res.status(400).json({ error: 'user can not be created without email.' })
         }
 
-        await userDb.findOne({ "email": email }).then((data) => {
+        await userDb.findOne({ "userId": uid }).then((data) => {
           return res.status(200).json({ data: data })
         }).catch(err => {
           console.log(err)
@@ -157,7 +152,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(400).json({ error: 'link can not be deleted without uid and doc.' })
         }
 
-        await userDb.updateOne({"_id": uid}, { '$pull': { "links": obj }}).then(async() => {
+        await userDb.updateOne({"userId": uid}, { '$pull': { "links": obj }}).then(async() => {
           await url_collection.deleteOne({"slug": obj.slug}).then(() => {
             return res.status(200).json({success: 'Link deleted'})
           }).catch(err => {
